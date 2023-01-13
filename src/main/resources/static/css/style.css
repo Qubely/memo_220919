@@ -1,4 +1,12 @@
 @charset "UTF-8";
 header {height:100px;}
+/* header {height:100px; background-color:#999;} */
 .contents {min-height:500px;}
 footer {height:100px;}
+/* footer {height:100px; background-color:#999;} */
+
+.header-box {height:100px;}
+.footer-box {height:100px;}
+
+.sign-up-box {width:550px;}
+.sign-up-table th {background:#D8D8D8;}
