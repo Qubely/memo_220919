@@ -62,8 +62,6 @@ public class UserRestController {
 			result.put("code", 500);
 			result.put("errorMessage", "회원 추가 실패");
 		}
-		
-		
 		return result;
 	}
 	
