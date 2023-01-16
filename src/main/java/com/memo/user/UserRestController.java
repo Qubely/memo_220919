@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.memo.common.EncryptUtils;
 import com.memo.user.bo.UserBO;
+import com.memo.user.model.User;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @RequestMapping("/user")
 @RestController
@@ -41,6 +45,14 @@ public class UserRestController {
 		return result;
 	}
 	
+	/**
+	 * 회원가입 API
+	 * @param loginId
+	 * @param password
+	 * @param name
+	 * @param email
+	 * @return
+	 */
 	@PostMapping("/sign_up")
 	public Map<String, Object> addUser(
 			@RequestParam("loginId") String loginId
@@ -62,6 +74,46 @@ public class UserRestController {
 			result.put("code", 500);
 			result.put("errorMessage", "회원 추가 실패");
 		}
+		return result;
+	}
+	
+	/**
+	 * 로그인 API
+	 * @param loginId
+	 * @param password
+	 * @param request
+	 * @return
+	 */
+	@PostMapping("/sign_in")
+	public Map<String, Object> signIn(
+			@RequestParam("loginId") String loginId
+			, @RequestParam("password") String password
+			, HttpServletRequest request) {
+		
+		// 비밀번호 해싱
+		String hashedPassword = EncryptUtils.md5(password);
+		// DB select
+		User user = userBO.getUserByLoginIdPassword(loginId, hashedPassword);
+		
+		Map<String, Object> result = new HashMap<>();
+		if (user != null) {
+			// 행이 있으면 로그인
+			result.put("code", 1);
+			result.put("result", "성공");
+			
+			// 세션에 유저 정보를 담는다.(로그인 상태 유지)
+			HttpSession session = request.getSession();
+			session.setAttribute("userId", user.getId());
+			session.setAttribute("userLoginId", user.getLoginId());
+			session.setAttribute("userName", user.getName());
+		} else {
+			// 행이 없으면 로그인 실패
+			result.put("code", 500);
+			result.put("errorMessage", "존재하지 않는 사용자 입니다.");
+		}
+		
+		
+		// return map
 		return result;
 	}
 	
