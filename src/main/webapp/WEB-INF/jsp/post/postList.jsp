@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="d-flex justify-content-center">
 	<div class="w-50">
 		<h1>글 목록</h1>
 		
-		<table class="table">
+		<table class="table text-center">
 			<thead>
 				<tr>
 					<th>번호</th>
@@ -14,12 +16,14 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
+				<c:forEach var="post" items="${postList}">
+					<tr>
+						<td>${post.id}</td>
+						<td><a href="/post/post_detail_view?postId=${post.id}">${post.subject}</a></td>
+						<td><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd a hh:mm:ss" /></td>
+						<td><fmt:formatDate value="${post.updatedAt}" pattern="yyyy-MM-dd a hh:mm:ss" /></td>
+					</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 		

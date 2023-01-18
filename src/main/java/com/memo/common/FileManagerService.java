@@ -13,7 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileManagerService {
 	
 	// 실제 이미지가 저장될 경로(서버).
-	public static final String FILE_UPLOAD_PATH = "D:\\Coding\\06_spring_project\\memo\\workspace\\images/";	// 학원 경로 따로 설정해야 함
+	// 학원 경로
+	public static final String FILE_UPLOAD_PATH = "D:\\LEEJONGSEOK\\6_spring_project\\memo\\workspace\\images/";
+	// 집 경로
+//	public static final String FILE_UPLOAD_PATH = "D:\\Coding\\06_spring_project\\memo\\workspace\\images/";
 	
 	// input : MultipartFile, userLoginId
 	// output : image path
@@ -30,7 +33,7 @@ public class FileManagerService {
 		// 파일 업로드 : byte 단위로 업로드 된다.
 		try {
 			byte[] bytes = file.getBytes();
-			// 파일 이름은 한글은 저장이 불가능하기 때문에 개인 프로젝트 진행 시  영어로 바꿔주는 로직 구성해야 함 
+			// 파일 이름은 한글은 저장이 불가능하기 때문에 개인 프로젝트 진행 시 영어로 바꿔주는 로직 구성해야 함 
 			Path path = Paths.get(filePath + file.getOriginalFilename());	// orignalFileName은 사용자가 올린 파일명
 			Files.write(path, bytes);
 		} catch (IOException e) {
