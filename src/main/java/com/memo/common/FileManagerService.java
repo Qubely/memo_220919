@@ -14,9 +14,9 @@ public class FileManagerService {
 	
 	// 실제 이미지가 저장될 경로(서버).
 	// 학원 경로
-	public static final String FILE_UPLOAD_PATH = "D:\\LEEJONGSEOK\\6_spring_project\\memo\\workspace\\images/";
+//	public static final String FILE_UPLOAD_PATH = "D:\\LEEJONGSEOK\\6_spring_project\\memo\\workspace\\images/";
 	// 집 경로
-//	public static final String FILE_UPLOAD_PATH = "D:\\Coding\\06_spring_project\\memo\\workspace\\images/";
+	public static final String FILE_UPLOAD_PATH = "D:\\Coding\\06_spring_project\\memo\\workspace\\images/";
 	
 	// input : MultipartFile, userLoginId
 	// output : image path
