@@ -6,17 +6,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component	// 이반적인 스프링 빈
 public class FileManagerService {
 	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	// 실제 이미지가 저장될 경로(서버).
 	// 학원 경로
-//	public static final String FILE_UPLOAD_PATH = "D:\\LEEJONGSEOK\\6_spring_project\\memo\\workspace\\images/";
+	public static final String FILE_UPLOAD_PATH = "D:\\LEEJONGSEOK\\6_spring_project\\memo\\workspace\\images/";
 	// 집 경로
-	public static final String FILE_UPLOAD_PATH = "D:\\Coding\\06_spring_project\\memo\\workspace\\images/";
+//	public static final String FILE_UPLOAD_PATH = "D:\\Coding\\06_spring_project\\memo\\workspace\\images/";
 	
 	// input : MultipartFile, userLoginId
 	// output : image path
@@ -44,5 +48,28 @@ public class FileManagerService {
 		// 파일 업로드 성공했으면 이미지 url path를 리턴한다.
 		// http://localhost/images/aaaa_1620546878/sun.png
 		return "/images/" + directoryName + file.getOriginalFilename();
+	}
+	
+	public void deleteFile(String imagePath) { // imagrPath : /images/aaaa_1620546878/sun.png
+		//  \\images/			imagePath에 있는 겹치는 /images/ 구문 제거
+		Path path = Paths.get(FILE_UPLOAD_PATH + imagePath.replace("/images/", ""));
+		if (Files.exists(path)) {
+			// 이미지 삭제
+			try {
+				Files.delete(path);
+			} catch (IOException e) {
+				logger.error("[이미지 삭제] 이미지 삭제 실패. imagePath:{}", imagePath);
+			}
+			// 디렉토리(폴더) 삭제
+			path = path.getParent();
+			if (Files.exists(path)) {
+				try {
+					Files.delete(path);
+				} catch (IOException e) {
+					logger.error("[이미지 삭제] 디렉토리 삭제 실패. imagePath:{}", imagePath);
+				}
+			}
+			
+		}
 	}
 }
