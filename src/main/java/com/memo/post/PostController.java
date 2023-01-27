@@ -23,14 +23,36 @@ public class PostController {
 	
 	// 글 목록 화면
 	@GetMapping("/post_list_view")
-	public String postListView(Model model, HttpSession session) {
+	public String postListView(
+			@RequestParam(value="prevId", required=false) Integer prevIdParam,
+			@RequestParam(value="nextId", required=false) Integer nextIdParam,
+			Model model, HttpSession session) {
 		model.addAttribute("viewName", "post/postList");
 		
 		Integer userId = (Integer)session.getAttribute("userId");
 		if (userId == null) {
 			return "redirect:/user/sign_in_view";
 		}
-		List<Post> postList = postBO.getPostListByUserId(userId);;
+		
+		int prevId = 0;
+		int nextId = 0;
+		List<Post> postList = postBO.getPostListByUserId(userId, prevIdParam, nextIdParam);
+		if (postList.isEmpty() == false) {	// postList가 비어있을 때 에러 방지
+			prevId = postList.get(0).getId(); // 가져온 리스트 중 가장 앞쪽(큰 id)
+			nextId = postList.get(postList.size() - 1).getId();	// 가져온 리스트 중 가장 뒤쪽(작은 id)
+			
+			// 이전 방향의 끝인가?	postList의 0index 값(prevId)과 post 테이블의 가장 큰 값과 같으면 마지막 페이지
+			if (postBO.isPrevLastPage(prevId, userId)) {	// 마지막 페이지일 때
+				prevId = 0;
+			}
+			// 다음 방향의 끝인가?	postList의 마지막index 값(nextId)과 post 테이블의 가장 작은 값과 같으면 마지막 페이지
+			if (postBO.isNextLastPage(nextId, userId)) {
+				nextId = 0;
+			}
+		}
+		
+		model.addAttribute("prevId", prevId);	// 가져온 리스트 중 가장 앞쪽(큰 id)
+		model.addAttribute("nextId", nextId);	// 가져온 리스트 중 가장 뒤쪽(작은 id)
 		model.addAttribute("postList", postList);
 		
 		return "template/layout";
@@ -47,6 +69,13 @@ public class PostController {
 		return "template/layout";
 	}
 	
+	/**
+	 * 글 상세 API
+	 * @param postId
+	 * @param session
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/post_detail_view")
 	public String postDetailView(
 			@RequestParam("postId") int postId,
@@ -65,5 +94,7 @@ public class PostController {
 		model.addAttribute("viewName", "post/postDetail");
 		return "template/layout";
 	}
+	
+	
 	
 }
